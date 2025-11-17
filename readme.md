@@ -20,7 +20,7 @@ This project validates core functionalities like login, adding items to cart, an
 
 1. Clone the repository:
 
-````bash
+```bash
 git clone https://github.com/pamprincipe/playwright-ecommerce-website-test.git
 ```
 
@@ -67,16 +67,18 @@ npx playwright show-report
 The automated tests cover the following scenarios:
 
 1. **Login Functionality**
+
    - Verify login with valid credentials.
    - Verify login fails with invalid credentials.
 
 2. **Shopping Cart**
+
    - Add items to the cart.
    - Verify cart updates correctly.
 
 3. **Logout Functionality**
+
    - Verify user can logout successfully.
 
 4. **Input Field Validation**
    - Check that required input fields are empty by default.
-````
