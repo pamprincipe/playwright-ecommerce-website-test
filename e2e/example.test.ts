@@ -35,7 +35,7 @@ test('login with empty fields', async ({ page }) => {
     await expect(page.getByText('Epic sadface: Username is required')).toBeVisible();
 });
 
-test('add item to cart and checkout', async ({ page }) => {
+test('add an item to cart and checkout', async ({ page }) => {
     await login(page);
     // Add item to cart
     await page.getByText('Sauce Labs Backpack').click();
@@ -57,6 +57,35 @@ test('add item to cart and checkout', async ({ page }) => {
     await page.getByRole('button', { name: 'Back Home' }).click();
     // Expect to be back on inventory page
     await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
+});
+
+test('add multiple items to cart and checkout', async ({ page }) => {
+    await login(page);
+    // Add first item to cart
+    await page.getByText('Sauce Labs Backpack').click();
+    // Click 'Add to cart' button
+    await page.getByRole('button', { name: 'Add to cart' }).click();
+    await page.goBack();
+    // Add second item to cart
+    await page.getByText('Sauce Labs Bike Light').click();
+    // Click 'Add to cart' button
+    await page.getByRole('button', { name: 'Add to cart' }).click();
+    // Go to cart
+    await page.click('.shopping_cart_link');
+    // Expect to see both items in cart
+    await expect(page.getByText('Sauce Labs Backpack')).toBeVisible();
+    await expect(page.getByText('Sauce Labs Bike Light')).toBeVisible();
+    await page.getByRole('button', { name: 'Checkout' }).click();
+    await page.getByPlaceholder('First Name').click();
+    await page.getByPlaceholder('First Name').fill('Jane');
+    await page.getByPlaceholder('Last Name').click();
+    await page.getByPlaceholder('Last Name').fill('Smith');
+    await page.getByPlaceholder('Zip/Postal Code').click();
+    await page.getByPlaceholder('Zip/Postal Code').fill('54321');
+    await page.getByRole('button', { name: 'Continue' }).click();
+    await page.getByRole('button', { name: 'Finish' }).click();
+    // Expect to see a message confirming the order
+    await expect(page.getByText('Your order has been dispatched')).toBeVisible();
 });
 
 test('logout functionality', async ({ page }) => {
