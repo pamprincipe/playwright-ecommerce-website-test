@@ -53,13 +53,13 @@ npx playwright test
 2. Run a specific test file:
 
 ```bash
-npx playwright test e2e/login.test.ts
+npx playwright test example.test.ts
 ```
 
 3. Generate a test report:
 
 ```bash
-npx playwright show-report
+npx playwright show-report example.test.ts
 ```
 
 ## Test Scenarios
@@ -82,3 +82,35 @@ The automated tests cover the following scenarios:
 
 4. **Input Field Validation**
    - Check that required input fields are empty by default.
+
+## Technologies
+
+1. [Playwright](https://playwright.dev/) - End-to-end testing framework
+2. [Node.js](https://nodejs.org/en) - JavaScript runtime
+3. [TypeScript](https://www.typescriptlang.org/) - Optional, for type safety
+
+## Contributing
+
+Contributions are welcome! Follow these steps to contribute:
+
+1. **Fork the repository**
+
+2. **Create your feature branch**
+
+   ```bash
+   git checkout -b feature/new-test
+   ```
+
+3. **Commit your changes**
+
+   ```bash
+   git commit -m "Add new test"
+   ```
+
+4. **Push to the branch**
+
+   ```bash
+   git push origin feature/new-test
+   ```
+
+5. **Create a Pull Request**
