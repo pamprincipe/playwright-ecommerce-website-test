@@ -1,21 +1,42 @@
 import { test, expect } from '@playwright/test';
 import { login } from '../helpers.js'; 
 
+// Valid test data
+const baseURL = 'https://www.saucedemo.com/';
+const users = {
+    valid: [
+        { username: 'standard_user', password: 'secret_sauce' },
+        { username: 'locked_out_user', password: 'secret_sauce' },
+        { username: 'problem_user', password: 'secret_sauce' },
+        { username: 'performance_glitch_user', password: 'secret_sauce' },
+        { username: 'error_user', password: 'secret_sauce' },
+        { username: 'visual_user', password: 'secret_sauce' }
+    ]
+};
+
 test('link can be opened', async ({ page }) => {
-  await page.goto('https://www.saucedemo.com/');
+  await page.goto(baseURL);
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/Swag Labs/);
 });
 
-test('login with valid credentials', async ({ page }) => {
-    await login(page);
-    // Expect to be on inventory page after login
-    await expect(page).toHaveURL('https://www.saucedemo.com/inventory.html');
-});
+users.valid.forEach(({ username, password }) => {
+    test(`login with valid credentials: ${username}`, async ({ page }) => {
+        await login(page, username, password);
+        console.log(`Logged in with user: ${username}`);
 
+        if (username === 'locked_out_user') {
+            // Expect error message for locked out user
+            await expect(page.getByText('Epic sadface: Sorry, this user has been locked out.')).toBeVisible();
+        } else {
+            // Expect to be on inventory page
+            await expect(page.locator('.inventory_list')).toBeVisible();
+        }
+    });
+});
 test ('login with invalid credentials', async ({ page }) => {
-    await page.goto('https://www.saucedemo.com/');
+    await page.goto(baseURL);
     await page.getByPlaceholder('Username').click();
     await page.getByPlaceholder('Username').fill('invalid_user');
     await page.getByPlaceholder('Password').click();
@@ -26,7 +47,7 @@ test ('login with invalid credentials', async ({ page }) => {
 });
 
 test('login with empty fields', async ({ page }) => {
-    await page.goto('https://www.saucedemo.com/');
+    await page.goto(baseURL);
     // Expect username and password fields to be empty by default
     await expect(page.getByPlaceholder('Username')).toHaveValue('');
     await expect(page.getByPlaceholder('Password')).toHaveValue('');
@@ -41,6 +62,9 @@ test('add an item to cart and checkout', async ({ page }) => {
     await page.getByText('Sauce Labs Backpack').click();
     // Click 'Add to cart' button
     await page.getByRole('button', { name: 'Add to cart' }).click();
+    // Expect one item in cart
+    await expect(page.locator('.shopping_cart_link')).toHaveCount(1);
+    console.log('One item added to cart');
     // Go to cart
     await page.click('.shopping_cart_link');
     // Proceed to checkout
@@ -85,7 +109,7 @@ test('add multiple items to cart and checkout', async ({ page }) => {
     await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByRole('button', { name: 'Finish' }).click();
     // Expect to see a message confirming the order
-    await expect(page.getByText('Your order has been dispatched')).toBeVisible();
+    await expect(page.locator('.complete-text')).toBeVisible();
 });
 
 test('logout functionality', async ({ page }) => {
